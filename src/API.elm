@@ -26,7 +26,7 @@ getSubjects token =
         , body = Http.emptyBody
         , expect = Http.expectJson (decodeResponce (D.list (D.string)))
         , timeout = Nothing
-        , withCredentials = False
+        , withCredentials = True
         }
 
 getSubject : String -> Token -> Http.Request (Responce (List ExerciseFromSubject))
@@ -38,7 +38,7 @@ getSubject subject token =
         , body = Http.emptyBody
         , expect = Http.expectJson (decodeResponce (D.list decodeExerciseFromSubject))
         , timeout = Nothing
-        , withCredentials = False
+        , withCredentials = True
         }
 
 getExercise : Int -> Token -> Http.Request (Responce Exercise)
@@ -50,7 +50,7 @@ getExercise id token =
         , body = Http.emptyBody
         , expect = Http.expectJson (decodeResponce decodeExercise)
         , timeout = Nothing
-        , withCredentials = False
+        , withCredentials = True
         }
 
 postExercise : Exercise -> Token -> Http.Request ()
@@ -62,7 +62,7 @@ postExercise ex token =
         , body = Http.jsonBody (encodeExercise ex)
         , expect = Http.expectStringResponse << always <| Ok ()
         , timeout = Nothing
-        , withCredentials = False
+        , withCredentials = True
         }
 
 getOlympStruct : String -> String -> Token -> Http.Request (Responce OlympStruct)
@@ -74,7 +74,7 @@ getOlympStruct subject grade token =
         , body = Http.emptyBody
         , expect = Http.expectJson (decodeResponce decodeOlympStruct)
         , timeout = Nothing
-        , withCredentials = False
+        , withCredentials = True
         }
 
 postOlympStruct : OlympStruct -> String -> String -> Token -> Http.Request ()
@@ -86,7 +86,7 @@ postOlympStruct os subject grade token =
         , body = Http.jsonBody (encodeOlympStruct os)
         , expect = Http.expectStringResponse << always <| Ok ()
         , timeout = Nothing
-        , withCredentials = False
+        , withCredentials = True
         }
 
 mkTokenHeader token =
