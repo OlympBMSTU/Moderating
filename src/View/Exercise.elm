@@ -144,7 +144,7 @@ update msg model =
             case model.exercise of
                 Success exercise ->
                     let
-                        updated = { exercise | rejected = r }
+                        updated = { exercise | isBroken = r }
                     in
                     ( {model | exercise = Success updated }, Cmd.none)
                 _ ->
@@ -316,7 +316,7 @@ viewControls model ex =
                 |> Fieldset.view
             ]
         , Form.group []
-            [ Checkbox.custom [ Checkbox.onCheck Reject, Checkbox.id "block", Checkbox.checked ex.rejected ] "Заблокировать"
+            [ Checkbox.custom [ Checkbox.onCheck Reject, Checkbox.id "block", Checkbox.checked ex.isBroken ] "Заблокировать"
             ]
         , Form.group []
             [ Form.label [] [ text "№ в билете" ]

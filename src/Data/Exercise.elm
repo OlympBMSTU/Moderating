@@ -11,7 +11,7 @@ type alias Exercise =
     , tags : List String
     , level : Int
     , subject : String
-    , rejected : Bool
+    , isBroken : Bool
     }
 
 decodeExercise : D.Decoder Exercise
@@ -23,7 +23,7 @@ decodeExercise =
         (D.field "tags" (D.list D.string))
         (D.field "level" D.int)
         (D.field "subject" D.string)
-        --(D.field "rejected" D.bool)
+        (D.field "IsBroken" D.bool)
 
 encodeExercise : Exercise -> E.Value
 encodeExercise ex =
@@ -34,7 +34,7 @@ encodeExercise ex =
         , ( "tags", (E.list E.string) ex.tags )
         , ( "level", E.int ex.level )
         , ( "subject", E.string ex.subject )
-        , ( "rejected", E.bool ex.rejected )
+        , ( "IsBroken", E.bool ex.isBroken )
         ]
 
 levelRegex : Regex.Regex

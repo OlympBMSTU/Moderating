@@ -10687,8 +10687,8 @@ var author$project$Data$Responce$mapResponce = function (resp) {
 	return data;
 };
 var author$project$Data$Exercise$Exercise = F7(
-	function (id, authorId, filename, tags, level, subject, rejected) {
-		return {authorId: authorId, filename: filename, id: id, level: level, rejected: rejected, subject: subject, tags: tags};
+	function (id, authorId, filename, tags, level, subject, isBroken) {
+		return {authorId: authorId, filename: filename, id: id, isBroken: isBroken, level: level, subject: subject, tags: tags};
 	});
 var elm$json$Json$Decode$bool = _Json_decodeBool;
 var elm$json$Json$Decode$map7 = _Json_map7;
@@ -10704,7 +10704,7 @@ var author$project$Data$Exercise$decodeExercise = A8(
 		elm$json$Json$Decode$list(elm$json$Json$Decode$string)),
 	A2(elm$json$Json$Decode$field, 'level', elm$json$Json$Decode$int),
 	A2(elm$json$Json$Decode$field, 'subject', elm$json$Json$Decode$string),
-	A2(elm$json$Json$Decode$field, 'rejected', elm$json$Json$Decode$bool));
+	A2(elm$json$Json$Decode$field, 'IsBroken', elm$json$Json$Decode$bool));
 var author$project$API$getExercise = F2(
 	function (id, token) {
 		return elm$http$Http$request(
@@ -10798,8 +10798,8 @@ var author$project$Data$Exercise$encodeExercise = function (ex) {
 				'subject',
 				elm$json$Json$Encode$string(ex.subject)),
 				_Utils_Tuple2(
-				'rejected',
-				elm$json$Json$Encode$bool(ex.rejected))
+				'IsBroken',
+				elm$json$Json$Encode$bool(ex.isBroken))
 			]));
 };
 var elm$http$Http$Internal$StringBody = F2(
@@ -11059,7 +11059,7 @@ var author$project$View$Exercise$update = F2(
 							var exercise = _n5.a;
 							var updated = _Utils_update(
 								exercise,
-								{rejected: r});
+								{isBroken: r});
 							return _Utils_Tuple2(
 								_Utils_update(
 									model,
@@ -13237,7 +13237,7 @@ var author$project$View$Exercise$viewControls = F2(
 								[
 									rundis$elm_bootstrap$Bootstrap$Form$Checkbox$onCheck(author$project$View$Exercise$Reject),
 									rundis$elm_bootstrap$Bootstrap$Form$Checkbox$id('block'),
-									rundis$elm_bootstrap$Bootstrap$Form$Checkbox$checked(ex.rejected)
+									rundis$elm_bootstrap$Bootstrap$Form$Checkbox$checked(ex.isBroken)
 								]),
 							'Заблокировать')
 						])),
@@ -14968,4 +14968,4 @@ _Platform_export({'Moder':{'init':author$project$Moder$main(
 			return elm$json$Json$Decode$succeed(
 				{token: token});
 		},
-		A2(elm$json$Json$Decode$field, 'token', elm$json$Json$Decode$string)))({"versions":{"elm":"0.19.0"},"types":{"message":"Moder.Msg","aliases":{"Data.Exercise.Exercise":{"args":[],"type":"{ id : Basics.Int, authorId : Basics.Int, filename : String.String, tags : List.List String.String, level : Basics.Int, subject : String.String, rejected : Basics.Bool }"},"Data.ExerciseFromSubject.ExerciseFromSubject":{"args":[],"type":"{ id : Basics.Int, authorId : Basics.Int, filename : String.String, tags : List.List String.String, level : Basics.Int, subject : String.String, isBroken : Basics.Bool }"},"RemoteData.WebData":{"args":["a"],"type":"RemoteData.RemoteData Http.Error a"},"Bootstrap.Navbar.VisibilityState":{"args":[],"type":"{ visibility : Bootstrap.Navbar.Visibility, height : Maybe.Maybe Basics.Float, windowWidth : Maybe.Maybe Basics.Float, dropdowns : Dict.Dict String.String Bootstrap.Navbar.DropdownStatus }"},"Http.Response":{"args":["body"],"type":"{ url : String.String, status : { code : Basics.Int, message : String.String }, headers : Dict.Dict String.String String.String, body : body }"}},"unions":{"Moder.Msg":{"args":[],"tags":{"ExerciseMsg":["View.Exercise.Msg"],"NavbarMsg":["Bootstrap.Navbar.State"]}},"View.Exercise.Msg":{"args":[],"tags":{"GetSubjects":["RemoteData.WebData (Data.Responce.Responce (List.List String.String))"],"GetSubject":["RemoteData.WebData (Data.Responce.Responce (List.List Data.ExerciseFromSubject.ExerciseFromSubject))"],"GetExercise":["RemoteData.WebData (Data.Responce.Responce Data.Exercise.Exercise)"],"PostExercise":["RemoteData.WebData ()"],"SubjectSelect":["String.String"],"GradeSelect":["String.String"],"ExerciseSelect":["Basics.Int"],"Level":["Basics.Int"],"NumberInVariant":["String.String"],"InputTags":["String.String"],"Reject":["Basics.Bool"],"UpdateExercise":[],"CloseModal":[]}},"Bootstrap.Navbar.State":{"args":[],"tags":{"State":["Bootstrap.Navbar.VisibilityState"]}},"Data.Responce.Responce":{"args":["a"],"tags":{"Responce":["Maybe.Maybe a","String.String","String.String"]}},"Basics.Bool":{"args":[],"tags":{"True":[],"False":[]}},"Basics.Float":{"args":[],"tags":{"Float":[]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":[]}},"List.List":{"args":["a"],"tags":{}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Http.Response String.String"],"BadPayload":["String.String","Http.Response String.String"]}},"RemoteData.RemoteData":{"args":["e","a"],"tags":{"NotAsked":[],"Loading":[],"Failure":["e"],"Success":["a"]}},"Bootstrap.Navbar.DropdownStatus":{"args":[],"tags":{"Open":[],"ListenClicks":[],"Closed":[]}},"Bootstrap.Navbar.Visibility":{"args":[],"tags":{"Hidden":[],"StartDown":[],"AnimatingDown":[],"StartUp":[],"AnimatingUp":[],"Shown":[]}},"Dict.NColor":{"args":[],"tags":{"Red":[],"Black":[]}}}}})}});}(this));
+		A2(elm$json$Json$Decode$field, 'token', elm$json$Json$Decode$string)))({"versions":{"elm":"0.19.0"},"types":{"message":"Moder.Msg","aliases":{"Data.Exercise.Exercise":{"args":[],"type":"{ id : Basics.Int, authorId : Basics.Int, filename : String.String, tags : List.List String.String, level : Basics.Int, subject : String.String, isBroken : Basics.Bool }"},"Data.ExerciseFromSubject.ExerciseFromSubject":{"args":[],"type":"{ id : Basics.Int, authorId : Basics.Int, filename : String.String, tags : List.List String.String, level : Basics.Int, subject : String.String, isBroken : Basics.Bool }"},"RemoteData.WebData":{"args":["a"],"type":"RemoteData.RemoteData Http.Error a"},"Bootstrap.Navbar.VisibilityState":{"args":[],"type":"{ visibility : Bootstrap.Navbar.Visibility, height : Maybe.Maybe Basics.Float, windowWidth : Maybe.Maybe Basics.Float, dropdowns : Dict.Dict String.String Bootstrap.Navbar.DropdownStatus }"},"Http.Response":{"args":["body"],"type":"{ url : String.String, status : { code : Basics.Int, message : String.String }, headers : Dict.Dict String.String String.String, body : body }"}},"unions":{"Moder.Msg":{"args":[],"tags":{"ExerciseMsg":["View.Exercise.Msg"],"NavbarMsg":["Bootstrap.Navbar.State"]}},"View.Exercise.Msg":{"args":[],"tags":{"GetSubjects":["RemoteData.WebData (Data.Responce.Responce (List.List String.String))"],"GetSubject":["RemoteData.WebData (Data.Responce.Responce (List.List Data.ExerciseFromSubject.ExerciseFromSubject))"],"GetExercise":["RemoteData.WebData (Data.Responce.Responce Data.Exercise.Exercise)"],"PostExercise":["RemoteData.WebData ()"],"SubjectSelect":["String.String"],"GradeSelect":["String.String"],"ExerciseSelect":["Basics.Int"],"Level":["Basics.Int"],"NumberInVariant":["String.String"],"InputTags":["String.String"],"Reject":["Basics.Bool"],"UpdateExercise":[],"CloseModal":[]}},"Bootstrap.Navbar.State":{"args":[],"tags":{"State":["Bootstrap.Navbar.VisibilityState"]}},"Data.Responce.Responce":{"args":["a"],"tags":{"Responce":["Maybe.Maybe a","String.String","String.String"]}},"Basics.Bool":{"args":[],"tags":{"True":[],"False":[]}},"Basics.Float":{"args":[],"tags":{"Float":[]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":[]}},"List.List":{"args":["a"],"tags":{}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Http.Response String.String"],"BadPayload":["String.String","Http.Response String.String"]}},"RemoteData.RemoteData":{"args":["e","a"],"tags":{"NotAsked":[],"Loading":[],"Failure":["e"],"Success":["a"]}},"Bootstrap.Navbar.DropdownStatus":{"args":[],"tags":{"Open":[],"ListenClicks":[],"Closed":[]}},"Bootstrap.Navbar.Visibility":{"args":[],"tags":{"Hidden":[],"StartDown":[],"AnimatingDown":[],"StartUp":[],"AnimatingUp":[],"Shown":[]}},"Dict.NColor":{"args":[],"tags":{"Red":[],"Black":[]}}}}})}});}(this));
