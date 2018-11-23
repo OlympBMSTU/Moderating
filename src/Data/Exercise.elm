@@ -23,7 +23,7 @@ decodeExercise =
         (D.field "tags" (D.list D.string))
         (D.field "level" D.int)
         (D.field "subject" D.string)
-        (D.field "rejected" D.bool)
+        --(D.field "rejected" D.bool)
 
 encodeExercise : Exercise -> E.Value
 encodeExercise ex =
