@@ -1,6 +1,8 @@
 module Data.ExerciseFromSubject exposing (..)
 
 import Json.Decode as D
+import Data.Level exposing (..)
+import Regex
 
 type alias ExerciseFromSubject =
     { id : Int
@@ -22,3 +24,7 @@ decodeExerciseFromSubject =
         (D.field "Level" D.int)
         (D.field "Subject" D.string)
         (D.field "IsBroken" D.bool)
+
+
+hasLevel ex = List.any (Regex.contains levelRegex << String.trim) ex.tags
+blocked ex = ex.isBroken

@@ -1,5 +1,5 @@
 module Reactor exposing (..)
 
-import Struct exposing (..)
+import Moder exposing (..)
 
 main = reactor

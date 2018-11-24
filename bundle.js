@@ -5147,9 +5147,9 @@ var author$project$Moder$Model = F3(
 var author$project$Moder$NavbarMsg = function (a) {
 	return {$: 'NavbarMsg', a: a};
 };
-var author$project$View$Exercise$Model = F7(
-	function (token, subjects, subject, exercise, modalVisibility, level, tagString) {
-		return {exercise: exercise, level: level, modalVisibility: modalVisibility, subject: subject, subjects: subjects, tagString: tagString, token: token};
+var author$project$View$Exercise$Model = F6(
+	function (token, subjects, subject, exercise, modalVisibility, tagString) {
+		return {exercise: exercise, modalVisibility: modalVisibility, subject: subject, subjects: subjects, tagString: tagString, token: token};
 	});
 var elm$core$Basics$EQ = {$: 'EQ'};
 var elm$core$Basics$LT = {$: 'LT'};
@@ -6462,7 +6462,7 @@ var rundis$elm_bootstrap$Bootstrap$Modal$Hide = {$: 'Hide'};
 var rundis$elm_bootstrap$Bootstrap$Modal$hidden = rundis$elm_bootstrap$Bootstrap$Modal$Hide;
 var author$project$View$Exercise$init = function (token) {
 	return _Utils_Tuple2(
-		A7(author$project$View$Exercise$Model, token, krisajenkins$remotedata$RemoteData$NotAsked, krisajenkins$remotedata$RemoteData$NotAsked, krisajenkins$remotedata$RemoteData$NotAsked, rundis$elm_bootstrap$Bootstrap$Modal$hidden, elm$core$Maybe$Nothing, ''),
+		A6(author$project$View$Exercise$Model, token, krisajenkins$remotedata$RemoteData$NotAsked, krisajenkins$remotedata$RemoteData$NotAsked, krisajenkins$remotedata$RemoteData$NotAsked, rundis$elm_bootstrap$Bootstrap$Modal$hidden, ''),
 		author$project$View$Exercise$getSubjects(token));
 };
 var elm$core$Platform$Cmd$batch = _Platform_batch;
@@ -10596,7 +10596,7 @@ var elm$regex$Regex$fromString = function (string) {
 		string);
 };
 var elm$regex$Regex$never = _Regex_never;
-var author$project$Data$Exercise$levelRegex = A2(
+var author$project$Data$Level$levelRegex = A2(
 	elm$core$Maybe$withDefault,
 	elm$regex$Regex$never,
 	elm$regex$Regex$fromString('[123] уровень сложности 2018 года?$'));
@@ -10605,7 +10605,7 @@ var elm$regex$Regex$contains = _Regex_contains;
 var author$project$Data$Exercise$cleanTag = function (x) {
 	return !A2(
 		elm$regex$Regex$contains,
-		author$project$Data$Exercise$levelRegex,
+		author$project$Data$Level$levelRegex,
 		elm$core$String$trim(x));
 };
 var elm$core$List$filter = F2(
@@ -10687,8 +10687,8 @@ var author$project$Data$Responce$mapResponce = function (resp) {
 	return data;
 };
 var author$project$Data$Exercise$Exercise = F7(
-	function (id, authorId, filename, tags, level, subject, isBroken) {
-		return {authorId: authorId, filename: filename, id: id, isBroken: isBroken, level: level, subject: subject, tags: tags};
+	function (id, authorId, filename, tags, level, subject, rejected) {
+		return {authorId: authorId, filename: filename, id: id, level: level, rejected: rejected, subject: subject, tags: tags};
 	});
 var elm$json$Json$Decode$bool = _Json_decodeBool;
 var elm$json$Json$Decode$map7 = _Json_map7;
@@ -10799,7 +10799,7 @@ var author$project$Data$Exercise$encodeExercise = function (ex) {
 				elm$json$Json$Encode$string(ex.subject)),
 				_Utils_Tuple2(
 				'IsBroken',
-				elm$json$Json$Encode$bool(ex.isBroken))
+				elm$json$Json$Encode$bool(ex.rejected))
 			]));
 };
 var elm$http$Http$Internal$StringBody = F2(
@@ -10977,14 +10977,13 @@ var author$project$View$Exercise$update = F2(
 					case 'GetExercise':
 						var resp = msg.a;
 						var exercise = author$project$Data$Responce$mapResponce(resp);
-						var cleanedExercise = A2(krisajenkins$remotedata$RemoteData$map, author$project$Data$Exercise$cleanTags, exercise);
 						return A2(
 							author$project$Data$Responce$logResponce,
 							resp,
 							_Utils_Tuple2(
 								_Utils_update(
 									model,
-									{exercise: cleanedExercise}),
+									{exercise: exercise}),
 								elm$core$Platform$Cmd$none));
 					case 'SubjectSelect':
 						var subject = msg.a;
@@ -11023,8 +11022,7 @@ var author$project$View$Exercise$update = F2(
 								_Utils_update(
 									model,
 									{
-										exercise: krisajenkins$remotedata$RemoteData$Success(taggedExercise),
-										level: elm$core$Maybe$Just(l)
+										exercise: krisajenkins$remotedata$RemoteData$Success(taggedExercise)
 									}),
 								elm$core$Platform$Cmd$none);
 						} else {
@@ -11059,7 +11057,7 @@ var author$project$View$Exercise$update = F2(
 							var exercise = _n5.a;
 							var updated = _Utils_update(
 								exercise,
-								{isBroken: r});
+								{rejected: r});
 							return _Utils_Tuple2(
 								_Utils_update(
 									model,
@@ -11990,6 +11988,18 @@ var author$project$Moder$viewNavbar = function (model) {
 			]));
 };
 var author$project$View$Exercise$CloseModal = {$: 'CloseModal'};
+var author$project$Data$ExerciseFromSubject$blocked = function (ex) {
+	return ex.isBroken;
+};
+var author$project$Data$ExerciseFromSubject$hasLevel = function (ex) {
+	return A2(
+		elm$core$List$any,
+		A2(
+			elm$core$Basics$composeL,
+			elm$regex$Regex$contains(author$project$Data$Level$levelRegex),
+			elm$core$String$trim),
+		ex.tags);
+};
 var author$project$View$Exercise$ExerciseSelect = function (a) {
 	return {$: 'ExerciseSelect', a: a};
 };
@@ -12128,8 +12138,12 @@ var rundis$elm_bootstrap$Bootstrap$ListGroup$custom = function (items) {
 var rundis$elm_bootstrap$Bootstrap$Internal$ListGroup$Roled = function (a) {
 	return {$: 'Roled', a: a};
 };
+var rundis$elm_bootstrap$Bootstrap$Internal$Role$Danger = {$: 'Danger'};
+var rundis$elm_bootstrap$Bootstrap$ListGroup$danger = rundis$elm_bootstrap$Bootstrap$Internal$ListGroup$Roled(rundis$elm_bootstrap$Bootstrap$Internal$Role$Danger);
 var rundis$elm_bootstrap$Bootstrap$Internal$Role$Info = {$: 'Info'};
 var rundis$elm_bootstrap$Bootstrap$ListGroup$info = rundis$elm_bootstrap$Bootstrap$Internal$ListGroup$Roled(rundis$elm_bootstrap$Bootstrap$Internal$Role$Info);
+var rundis$elm_bootstrap$Bootstrap$Internal$Role$Success = {$: 'Success'};
+var rundis$elm_bootstrap$Bootstrap$ListGroup$success = rundis$elm_bootstrap$Bootstrap$Internal$ListGroup$Roled(rundis$elm_bootstrap$Bootstrap$Internal$Role$Success);
 var author$project$View$Exercise$viewExerciseList = function (model) {
 	var list = function () {
 		var _n1 = model.subject;
@@ -12150,12 +12164,11 @@ var author$project$View$Exercise$viewExerciseList = function (model) {
 		}
 	}();
 	var mkListItem = function (ex) {
-		var attrs = _Utils_ap(
-			_List_Nil,
-			_Utils_eq(
-				elm$core$Maybe$Just(ex.id),
-				currentExId) ? _List_fromArray(
-				[rundis$elm_bootstrap$Bootstrap$ListGroup$info]) : _List_fromArray(
+		var attrs = _Utils_eq(
+			elm$core$Maybe$Just(ex.id),
+			currentExId) ? _List_fromArray(
+			[rundis$elm_bootstrap$Bootstrap$ListGroup$info]) : _Utils_ap(
+			_List_fromArray(
 				[
 					rundis$elm_bootstrap$Bootstrap$ListGroup$attrs(
 					_List_fromArray(
@@ -12163,7 +12176,10 @@ var author$project$View$Exercise$viewExerciseList = function (model) {
 							elm$html$Html$Events$onClick(
 							author$project$View$Exercise$ExerciseSelect(ex.id))
 						]))
-				]));
+				]),
+			author$project$Data$ExerciseFromSubject$blocked(ex) ? _List_fromArray(
+				[rundis$elm_bootstrap$Bootstrap$ListGroup$danger]) : (author$project$Data$ExerciseFromSubject$hasLevel(ex) ? _List_fromArray(
+				[rundis$elm_bootstrap$Bootstrap$ListGroup$success]) : _List_Nil));
 		return A2(
 			rundis$elm_bootstrap$Bootstrap$ListGroup$anchor,
 			attrs,
@@ -12472,6 +12488,9 @@ var author$project$View$Exercise$viewSubjectSelect = function (model) {
 			]));
 };
 var author$project$View$Exercise$UpdateExercise = {$: 'UpdateExercise'};
+var author$project$Data$Level$level1_2018 = '1 уровень сложности 2018 года';
+var author$project$Data$Level$level2_2018 = '2 уровень сложности 2018 года';
+var author$project$Data$Level$level3_2018 = '3 уровень сложности 2018 года';
 var author$project$View$Exercise$Level = function (a) {
 	return {$: 'Level', a: a};
 };
@@ -13159,6 +13178,17 @@ var rundis$elm_bootstrap$Bootstrap$Form$Radio$radioList = F2(
 	});
 var author$project$View$Exercise$viewControls = F2(
 	function (model, ex) {
+		var find = F2(
+			function (x, lst) {
+				return !_Utils_eq(
+					A2(
+						elm$core$List$filter,
+						function (y) {
+							return _Utils_eq(y, x);
+						},
+						lst),
+					_List_Nil);
+			});
 		return A2(
 			rundis$elm_bootstrap$Bootstrap$Form$form,
 			_List_Nil,
@@ -13192,11 +13222,9 @@ var author$project$View$Exercise$viewControls = F2(
 													author$project$View$Exercise$Level(1)),
 													rundis$elm_bootstrap$Bootstrap$Form$Radio$id('rdi1'),
 													rundis$elm_bootstrap$Bootstrap$Form$Radio$checked(
-													_Utils_eq(
-														elm$core$Maybe$Just(1),
-														model.level))
+													A2(find, author$project$Data$Level$level1_2018, ex.tags))
 												]),
-											'1 уровень сложности 2018 года'),
+											author$project$Data$Level$level1_2018),
 											A2(
 											rundis$elm_bootstrap$Bootstrap$Form$Radio$createCustom,
 											_List_fromArray(
@@ -13205,11 +13233,9 @@ var author$project$View$Exercise$viewControls = F2(
 													author$project$View$Exercise$Level(2)),
 													rundis$elm_bootstrap$Bootstrap$Form$Radio$id('rdi2'),
 													rundis$elm_bootstrap$Bootstrap$Form$Radio$checked(
-													_Utils_eq(
-														elm$core$Maybe$Just(2),
-														model.level))
+													A2(find, author$project$Data$Level$level2_2018, ex.tags))
 												]),
-											'2 уровень сложности 2018 года'),
+											author$project$Data$Level$level2_2018),
 											A2(
 											rundis$elm_bootstrap$Bootstrap$Form$Radio$createCustom,
 											_List_fromArray(
@@ -13218,11 +13244,9 @@ var author$project$View$Exercise$viewControls = F2(
 													author$project$View$Exercise$Level(3)),
 													rundis$elm_bootstrap$Bootstrap$Form$Radio$id('rdi3'),
 													rundis$elm_bootstrap$Bootstrap$Form$Radio$checked(
-													_Utils_eq(
-														elm$core$Maybe$Just(3),
-														model.level))
+													A2(find, author$project$Data$Level$level3_2018, ex.tags))
 												]),
-											'3 уровень сложности 2018 года')
+											author$project$Data$Level$level3_2018)
 										])),
 								rundis$elm_bootstrap$Bootstrap$Form$Fieldset$config))
 						])),
@@ -13237,7 +13261,7 @@ var author$project$View$Exercise$viewControls = F2(
 								[
 									rundis$elm_bootstrap$Bootstrap$Form$Checkbox$onCheck(author$project$View$Exercise$Reject),
 									rundis$elm_bootstrap$Bootstrap$Form$Checkbox$id('block'),
-									rundis$elm_bootstrap$Bootstrap$Form$Checkbox$checked(ex.isBroken)
+									rundis$elm_bootstrap$Bootstrap$Form$Checkbox$checked(ex.rejected)
 								]),
 							'Заблокировать')
 						])),
@@ -13282,6 +13306,9 @@ var author$project$View$Exercise$viewPdf = function (path) {
 			]),
 		_List_Nil);
 };
+var author$project$Data$Exercise$cleanTags_ = function (lst) {
+	return A2(elm$core$List$filter, author$project$Data$Exercise$cleanTag, lst);
+};
 var author$project$View$Exercise$InputTags = function (a) {
 	return {$: 'InputTags', a: a};
 };
@@ -13298,6 +13325,7 @@ var rundis$elm_bootstrap$Bootstrap$Form$help = F2(
 	});
 var rundis$elm_bootstrap$Bootstrap$Form$Input$text = rundis$elm_bootstrap$Bootstrap$Form$Input$input(rundis$elm_bootstrap$Bootstrap$Form$Input$Text);
 var author$project$View$Exercise$viewTags = function (tags) {
+	var cleaned = author$project$Data$Exercise$cleanTags_(tags);
 	return A2(
 		rundis$elm_bootstrap$Bootstrap$Form$form,
 		_List_Nil,
@@ -13328,7 +13356,7 @@ var author$project$View$Exercise$viewTags = function (tags) {
 										function (x) {
 											return A2(elm$core$String$startsWith, ' ', x) ? x : (' ' + x);
 										},
-										tags)))
+										cleaned)))
 							])),
 						A2(
 						rundis$elm_bootstrap$Bootstrap$Form$help,
@@ -14968,4 +14996,4 @@ _Platform_export({'Moder':{'init':author$project$Moder$main(
 			return elm$json$Json$Decode$succeed(
 				{token: token});
 		},
-		A2(elm$json$Json$Decode$field, 'token', elm$json$Json$Decode$string)))({"versions":{"elm":"0.19.0"},"types":{"message":"Moder.Msg","aliases":{"Data.Exercise.Exercise":{"args":[],"type":"{ id : Basics.Int, authorId : Basics.Int, filename : String.String, tags : List.List String.String, level : Basics.Int, subject : String.String, isBroken : Basics.Bool }"},"Data.ExerciseFromSubject.ExerciseFromSubject":{"args":[],"type":"{ id : Basics.Int, authorId : Basics.Int, filename : String.String, tags : List.List String.String, level : Basics.Int, subject : String.String, isBroken : Basics.Bool }"},"RemoteData.WebData":{"args":["a"],"type":"RemoteData.RemoteData Http.Error a"},"Bootstrap.Navbar.VisibilityState":{"args":[],"type":"{ visibility : Bootstrap.Navbar.Visibility, height : Maybe.Maybe Basics.Float, windowWidth : Maybe.Maybe Basics.Float, dropdowns : Dict.Dict String.String Bootstrap.Navbar.DropdownStatus }"},"Http.Response":{"args":["body"],"type":"{ url : String.String, status : { code : Basics.Int, message : String.String }, headers : Dict.Dict String.String String.String, body : body }"}},"unions":{"Moder.Msg":{"args":[],"tags":{"ExerciseMsg":["View.Exercise.Msg"],"NavbarMsg":["Bootstrap.Navbar.State"]}},"View.Exercise.Msg":{"args":[],"tags":{"GetSubjects":["RemoteData.WebData (Data.Responce.Responce (List.List String.String))"],"GetSubject":["RemoteData.WebData (Data.Responce.Responce (List.List Data.ExerciseFromSubject.ExerciseFromSubject))"],"GetExercise":["RemoteData.WebData (Data.Responce.Responce Data.Exercise.Exercise)"],"PostExercise":["RemoteData.WebData ()"],"SubjectSelect":["String.String"],"GradeSelect":["String.String"],"ExerciseSelect":["Basics.Int"],"Level":["Basics.Int"],"NumberInVariant":["String.String"],"InputTags":["String.String"],"Reject":["Basics.Bool"],"UpdateExercise":[],"CloseModal":[]}},"Bootstrap.Navbar.State":{"args":[],"tags":{"State":["Bootstrap.Navbar.VisibilityState"]}},"Data.Responce.Responce":{"args":["a"],"tags":{"Responce":["Maybe.Maybe a","String.String","String.String"]}},"Basics.Bool":{"args":[],"tags":{"True":[],"False":[]}},"Basics.Float":{"args":[],"tags":{"Float":[]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":[]}},"List.List":{"args":["a"],"tags":{}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Http.Response String.String"],"BadPayload":["String.String","Http.Response String.String"]}},"RemoteData.RemoteData":{"args":["e","a"],"tags":{"NotAsked":[],"Loading":[],"Failure":["e"],"Success":["a"]}},"Bootstrap.Navbar.DropdownStatus":{"args":[],"tags":{"Open":[],"ListenClicks":[],"Closed":[]}},"Bootstrap.Navbar.Visibility":{"args":[],"tags":{"Hidden":[],"StartDown":[],"AnimatingDown":[],"StartUp":[],"AnimatingUp":[],"Shown":[]}},"Dict.NColor":{"args":[],"tags":{"Red":[],"Black":[]}}}}})}});}(this));
+		A2(elm$json$Json$Decode$field, 'token', elm$json$Json$Decode$string)))({"versions":{"elm":"0.19.0"},"types":{"message":"Moder.Msg","aliases":{"Data.Exercise.Exercise":{"args":[],"type":"{ id : Basics.Int, authorId : Basics.Int, filename : String.String, tags : List.List String.String, level : Basics.Int, subject : String.String, rejected : Basics.Bool }"},"Data.ExerciseFromSubject.ExerciseFromSubject":{"args":[],"type":"{ id : Basics.Int, authorId : Basics.Int, filename : String.String, tags : List.List String.String, level : Basics.Int, subject : String.String, isBroken : Basics.Bool }"},"RemoteData.WebData":{"args":["a"],"type":"RemoteData.RemoteData Http.Error a"},"Bootstrap.Navbar.VisibilityState":{"args":[],"type":"{ visibility : Bootstrap.Navbar.Visibility, height : Maybe.Maybe Basics.Float, windowWidth : Maybe.Maybe Basics.Float, dropdowns : Dict.Dict String.String Bootstrap.Navbar.DropdownStatus }"},"Http.Response":{"args":["body"],"type":"{ url : String.String, status : { code : Basics.Int, message : String.String }, headers : Dict.Dict String.String String.String, body : body }"}},"unions":{"Moder.Msg":{"args":[],"tags":{"ExerciseMsg":["View.Exercise.Msg"],"NavbarMsg":["Bootstrap.Navbar.State"]}},"View.Exercise.Msg":{"args":[],"tags":{"GetSubjects":["RemoteData.WebData (Data.Responce.Responce (List.List String.String))"],"GetSubject":["RemoteData.WebData (Data.Responce.Responce (List.List Data.ExerciseFromSubject.ExerciseFromSubject))"],"GetExercise":["RemoteData.WebData (Data.Responce.Responce Data.Exercise.Exercise)"],"PostExercise":["RemoteData.WebData ()"],"SubjectSelect":["String.String"],"GradeSelect":["String.String"],"ExerciseSelect":["Basics.Int"],"Level":["Basics.Int"],"NumberInVariant":["String.String"],"InputTags":["String.String"],"Reject":["Basics.Bool"],"UpdateExercise":[],"CloseModal":[]}},"Bootstrap.Navbar.State":{"args":[],"tags":{"State":["Bootstrap.Navbar.VisibilityState"]}},"Data.Responce.Responce":{"args":["a"],"tags":{"Responce":["Maybe.Maybe a","String.String","String.String"]}},"Basics.Bool":{"args":[],"tags":{"True":[],"False":[]}},"Basics.Float":{"args":[],"tags":{"Float":[]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":[]}},"List.List":{"args":["a"],"tags":{}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"String.String":{"args":[],"tags":{"String":[]}},"Http.Error":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Http.Response String.String"],"BadPayload":["String.String","Http.Response String.String"]}},"RemoteData.RemoteData":{"args":["e","a"],"tags":{"NotAsked":[],"Loading":[],"Failure":["e"],"Success":["a"]}},"Bootstrap.Navbar.DropdownStatus":{"args":[],"tags":{"Open":[],"ListenClicks":[],"Closed":[]}},"Bootstrap.Navbar.Visibility":{"args":[],"tags":{"Hidden":[],"StartDown":[],"AnimatingDown":[],"StartUp":[],"AnimatingUp":[],"Shown":[]}},"Dict.NColor":{"args":[],"tags":{"Red":[],"Black":[]}}}}})}});}(this));

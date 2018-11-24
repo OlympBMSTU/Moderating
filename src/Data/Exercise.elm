@@ -3,6 +3,7 @@ module Data.Exercise exposing (..)
 import Json.Decode as D
 import Json.Encode as E
 import Regex
+import Data.Level exposing (..)
 
 type alias Exercise =
     { id : Int
@@ -11,7 +12,7 @@ type alias Exercise =
     , tags : List String
     , level : Int
     , subject : String
-    , isBroken : Bool
+    , rejected : Bool
     }
 
 decodeExercise : D.Decoder Exercise
@@ -34,13 +35,12 @@ encodeExercise ex =
         , ( "tags", (E.list E.string) ex.tags )
         , ( "level", E.int ex.level )
         , ( "subject", E.string ex.subject )
-        , ( "IsBroken", E.bool ex.isBroken )
+        , ( "IsBroken", E.bool ex.rejected )
         ]
 
-levelRegex : Regex.Regex
-levelRegex =
-    Maybe.withDefault Regex.never <| Regex.fromString "[123] уровень сложности 2018 года?$"
 
 cleanTags ex = {ex | tags = List.filter cleanTag ex.tags}
+
+cleanTags_ lst = List.filter cleanTag lst
 
 cleanTag x = not <| Regex.contains levelRegex <| String.trim x

@@ -30,6 +30,7 @@ import RemoteData exposing (RemoteData(..), WebData)
 import String
 import Task
 import Time
+import Data.Level exposing (..)
 
 import Debug
 
@@ -39,14 +40,13 @@ type alias Model =
     , subject : WebData (List ExerciseFromSubject)
     , exercise : WebData (Exercise)
     , modalVisibility : Modal.Visibility
-    , level : Maybe Int
     , tagString : String
     }
 
 
 init : API.Token -> ( Model, Cmd Msg )
 init token =
-    ( Model token NotAsked NotAsked NotAsked Modal.hidden Nothing "", getSubjects token )
+    ( Model token NotAsked NotAsked NotAsked Modal.hidden "", getSubjects token )
 
 
 type Msg
@@ -109,9 +109,8 @@ update msg model =
         GetExercise resp ->
             let
                 exercise = mapResponce resp
-                cleanedExercise = RemoteData.map cleanTags exercise
             in
-            logResponce resp <| ( {model | exercise = cleanedExercise }, Cmd.none )
+            logResponce resp <| ( {model | exercise = exercise }, Cmd.none )
         SubjectSelect subject ->
             ( {model | exercise = NotAsked}, getSubject "" subject model.token )
         ExerciseSelect id ->
@@ -127,7 +126,7 @@ update msg model =
                         tag = String.fromInt l ++ " уровень сложности 2018 года"
                         taggedExercise = {cleanedExercise | tags = temp ++ [tag]}
                     in
-                    ( {model | level = Just l, exercise = Success taggedExercise }, Cmd.none)
+                    ( {model | exercise = Success taggedExercise }, Cmd.none)
                 _ ->
                     ( model, Cmd.none )
         NumberInVariant sv ->
@@ -144,7 +143,7 @@ update msg model =
             case model.exercise of
                 Success exercise ->
                     let
-                        updated = { exercise | isBroken = r }
+                        updated = { exercise | rejected = r }
                     in
                     ( {model | exercise = Success updated }, Cmd.none)
                 _ ->
@@ -251,10 +250,17 @@ viewExerciseList model =
                 _ -> Nothing
         mkListItem ex =
             let
-                attrs = [  ] ++
+                attrs =
                     if Just ex.id == currentExId
                         then [ ListGroup.info ]
                         else [ ListGroup.attrs [ onClick (ExerciseSelect ex.id)] ]
+                    ++
+                    if blocked ex
+                        then [ListGroup.danger]
+                        else if hasLevel ex
+                            then [ListGroup.success]
+                            else []
+
             in
             ListGroup.anchor attrs [ text <| "#" ++ String.fromInt ex.id ]
     in
@@ -302,21 +308,24 @@ viewExercise model exercise =
 
 viewControls : Model -> Exercise -> Html.Html Msg
 viewControls model ex =
+    let
+        find x lst = List.filter (\y -> y == x) lst /= []
+    in
     Form.form []
         [ Form.group []
             [ Form.label [] [ text "Уровень сложности" ]
             , Fieldset.config
                 |> Fieldset.children
                     ( Radio.radioList "customradiogroup"
-                        [ Radio.createCustom [ Radio.onClick (Level 1), Radio.id "rdi1", Radio.checked (Just 1 == model.level) ] "1 уровень сложности 2018 года"
-                        , Radio.createCustom [ Radio.onClick (Level 2), Radio.id "rdi2", Radio.checked (Just 2 == model.level) ] "2 уровень сложности 2018 года"
-                        , Radio.createCustom [ Radio.onClick (Level 3), Radio.id "rdi3", Radio.checked (Just 3 == model.level) ] "3 уровень сложности 2018 года"
+                        [ Radio.createCustom [ Radio.onClick (Level 1), Radio.id "rdi1", Radio.checked (find level1_2018 ex.tags) ] level1_2018
+                        , Radio.createCustom [ Radio.onClick (Level 2), Radio.id "rdi2", Radio.checked (find level2_2018 ex.tags) ] level2_2018
+                        , Radio.createCustom [ Radio.onClick (Level 3), Radio.id "rdi3", Radio.checked (find level3_2018 ex.tags) ] level3_2018
                         ]
                     )
                 |> Fieldset.view
             ]
         , Form.group []
-            [ Checkbox.custom [ Checkbox.onCheck Reject, Checkbox.id "block", Checkbox.checked ex.isBroken ] "Заблокировать"
+            [ Checkbox.custom [ Checkbox.onCheck Reject, Checkbox.id "block", Checkbox.checked ex.rejected ] "Заблокировать"
             ]
         , Form.group []
             [ Form.label [] [ text "№ в билете" ]
@@ -338,10 +347,13 @@ viewPdf path =
 
 viewTags : List String -> Html.Html Msg
 viewTags tags =
+    let
+        cleaned = cleanTags_ tags
+    in
     Form.form []
         [ Form.group []
             [ Form.label [] [ text "Тэги" ]
-            , Input.text [Input.onInput InputTags, Input.value <| String.join "," <| List.map (\x -> if String.startsWith " " x then x else " " ++ x) tags]
+            , Input.text [Input.onInput InputTags, Input.value <| String.join "," <| List.map (\x -> if String.startsWith " " x then x else " " ++ x) cleaned]
             , Form.help [] [ text "Перечислите тэги через запятую" ]
             ]
         ]
