@@ -10826,7 +10826,7 @@ var author$project$API$postExercise = F2(
 				headers: author$project$API$mkTokenHeader(token),
 				method: 'POST',
 				timeout: elm$core$Maybe$Nothing,
-				url: 'https://olymp.bmstu.ru/api/exercises/update' + elm$core$String$fromInt(ex.id),
+				url: 'https://olymp.bmstu.ru/api/exercises/update',
 				withCredentials: true
 			});
 	});
