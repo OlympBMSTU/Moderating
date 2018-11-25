@@ -10773,51 +10773,35 @@ var author$project$View$Exercise$getSubject = F3(
 			krisajenkins$remotedata$RemoteData$sendRequest(
 				A2(author$project$API$getSubject, subject, token)));
 	});
-var elm$json$Json$Encode$bool = _Json_wrap;
-var elm$json$Json$Encode$int = _Json_wrap;
-var author$project$Data$Exercise$encodeExercise = function (ex) {
-	return elm$json$Json$Encode$object(
-		_List_fromArray(
-			[
-				_Utils_Tuple2(
-				'id',
-				elm$json$Json$Encode$int(ex.id)),
-				_Utils_Tuple2(
-				'author',
-				elm$json$Json$Encode$int(ex.authorId)),
-				_Utils_Tuple2(
-				'file_name',
-				elm$json$Json$Encode$string(ex.filename)),
-				_Utils_Tuple2(
-				'tags',
-				elm$json$Json$Encode$list(elm$json$Json$Encode$string)(ex.tags)),
-				_Utils_Tuple2(
-				'level',
-				elm$json$Json$Encode$int(ex.level)),
-				_Utils_Tuple2(
-				'subject',
-				elm$json$Json$Encode$string(ex.subject)),
-				_Utils_Tuple2(
-				'is_broken',
-				elm$json$Json$Encode$bool(ex.rejected))
-			]));
+var author$project$API$boolToStr = function (val) {
+	return val ? 'true' : 'false';
 };
-var elm$http$Http$Internal$StringBody = F2(
+var elm$http$Http$multipartBody = _Http_multipart;
+var elm$http$Http$StringPart = F2(
 	function (a, b) {
-		return {$: 'StringBody', a: a, b: b};
+		return {$: 'StringPart', a: a, b: b};
 	});
-var elm$http$Http$jsonBody = function (value) {
-	return A2(
-		elm$http$Http$Internal$StringBody,
-		'application/json',
-		A2(elm$json$Json$Encode$encode, 0, value));
-};
+var elm$http$Http$stringPart = elm$http$Http$StringPart;
 var author$project$API$postExercise = F2(
 	function (ex, token) {
 		return elm$http$Http$request(
 			{
-				body: elm$http$Http$jsonBody(
-					author$project$Data$Exercise$encodeExercise(ex)),
+				body: elm$http$Http$multipartBody(
+					_List_fromArray(
+						[
+							A2(
+							elm$http$Http$stringPart,
+							'id',
+							elm$core$String$fromInt(ex.id)),
+							A2(
+							elm$http$Http$stringPart,
+							'level',
+							elm$core$String$fromInt(ex.level)),
+							A2(
+							elm$http$Http$stringPart,
+							'is_broken',
+							author$project$API$boolToStr(ex.rejected))
+						])),
 				expect: A3(
 					elm$core$Basics$composeL,
 					elm$http$Http$expectStringResponse,
@@ -12075,6 +12059,7 @@ var rundis$elm_bootstrap$Bootstrap$Internal$ListGroup$applyModifier = F2(
 		}
 	});
 var rundis$elm_bootstrap$Bootstrap$Internal$ListGroup$defaultOptions = {action: false, active: false, attributes: _List_Nil, disabled: false, role: elm$core$Maybe$Nothing};
+var elm$json$Json$Encode$bool = _Json_wrap;
 var elm$html$Html$Attributes$boolProperty = F2(
 	function (key, bool) {
 		return A2(

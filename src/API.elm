@@ -5,6 +5,7 @@ import Data.ExerciseFromSubject exposing (..)
 import Data.Responce exposing (..)
 import Data.OlympStruct exposing (..)
 import Http
+import Html
 import Json.Encode as E
 import Json.Decode as D
 
@@ -59,7 +60,11 @@ postExercise ex token =
         { method = "POST"
         , headers = mkTokenHeader token
         , url = "https://olymp.bmstu.ru/api/exercises/update"
-        , body = Http.jsonBody (encodeExercise ex)
+        , body = Http.multipartBody
+            [   Http.stringPart "id" (String.fromInt ex.id),
+                Http.stringPart "level" (String.fromInt ex.level),
+                Http.stringPart "is_broken" (boolToStr ex.rejected)
+            ]
         , expect = Http.expectStringResponse << always <| Ok ()
         , timeout = Nothing
         , withCredentials = True
@@ -91,3 +96,9 @@ postOlympStruct os subject grade token =
 
 mkTokenHeader token =
     []
+
+boolToStr val = 
+    if val then
+        "true"
+    else
+        "false"
