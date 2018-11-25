@@ -58,7 +58,7 @@ postExercise ex token =
     Http.request
         { method = "POST"
         , headers = mkTokenHeader token
-        , url = "https://olymp.bmstu.ru/api/exercises/update/" ++ String.fromInt ex.id
+        , url = "https://olymp.bmstu.ru/api/exercises/update" {--} ++ String.fromInt ex.id --}
         , body = Http.jsonBody (encodeExercise ex)
         , expect = Http.expectStringResponse << always <| Ok ()
         , timeout = Nothing
