@@ -63,6 +63,7 @@ postExercise ex token =
         , body = Http.multipartBody
             [   Http.stringPart "id" (String.fromInt ex.id),
                 Http.stringPart "level" (String.fromInt ex.level),
+                Http.stringPart "tags" (E.encode 0 (E.list E.string ex.tags)),
                 Http.stringPart "is_broken" (boolToStr ex.rejected)
             ]
         , expect = Http.expectStringResponse << always <| Ok ()
@@ -102,3 +103,6 @@ boolToStr val =
         "true"
     else
         "false"
+
+jsonEx ex =
+    (encodeExercise ex)

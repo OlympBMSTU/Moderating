@@ -10799,6 +10799,13 @@ var author$project$API$postExercise = F2(
 							elm$core$String$fromInt(ex.level)),
 							A2(
 							elm$http$Http$stringPart,
+							'tags',
+							A2(
+								elm$json$Json$Encode$encode,
+								0,
+								A2(elm$json$Json$Encode$list, elm$json$Json$Encode$string, ex.tags))),
+							A2(
+							elm$http$Http$stringPart,
 							'is_broken',
 							author$project$API$boolToStr(ex.rejected))
 						])),
