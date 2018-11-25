@@ -24,7 +24,7 @@ decodeExercise =
         (D.field "tags" (D.list D.string))
         (D.field "level" D.int)
         (D.field "subject" D.string)
-        (D.field "IsBroken" D.bool)
+        (D.field "is_broken" D.bool)
 
 encodeExercise : Exercise -> E.Value
 encodeExercise ex =
@@ -35,7 +35,7 @@ encodeExercise ex =
         , ( "tags", (E.list E.string) ex.tags )
         , ( "level", E.int ex.level )
         , ( "subject", E.string ex.subject )
-        , ( "IsBroken", E.bool ex.rejected )
+        , ( "is_broken", E.bool ex.rejected )
         ]
 
 

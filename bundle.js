@@ -10704,7 +10704,7 @@ var author$project$Data$Exercise$decodeExercise = A8(
 		elm$json$Json$Decode$list(elm$json$Json$Decode$string)),
 	A2(elm$json$Json$Decode$field, 'level', elm$json$Json$Decode$int),
 	A2(elm$json$Json$Decode$field, 'subject', elm$json$Json$Decode$string),
-	A2(elm$json$Json$Decode$field, 'IsBroken', elm$json$Json$Decode$bool));
+	A2(elm$json$Json$Decode$field, 'is_broken', elm$json$Json$Decode$bool));
 var author$project$API$getExercise = F2(
 	function (id, token) {
 		return elm$http$Http$request(
@@ -10798,7 +10798,7 @@ var author$project$Data$Exercise$encodeExercise = function (ex) {
 				'subject',
 				elm$json$Json$Encode$string(ex.subject)),
 				_Utils_Tuple2(
-				'IsBroken',
+				'is_broken',
 				elm$json$Json$Encode$bool(ex.rejected))
 			]));
 };
