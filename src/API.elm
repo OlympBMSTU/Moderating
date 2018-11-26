@@ -30,12 +30,12 @@ getSubjects token =
         , withCredentials = True
         }
 
-getSubject : String -> Token -> Http.Request (Responce (List ExerciseFromSubject))
-getSubject subject token =
+getSubject : String -> String -> Token -> Http.Request (Responce (List ExerciseFromSubject))
+getSubject subject grade token =
     Http.request
         { method = "GET"
         , headers = mkTokenHeader token
-        , url = "https://olymp.bmstu.ru/api/exercises/list/" ++ subject
+        , url = "https://olymp.bmstu.ru/api/exercises/list/" ++ subject ++ "/" ++ grade
         , body = Http.emptyBody
         , expect = Http.expectJson (decodeResponce (D.list decodeExerciseFromSubject))
         , timeout = Nothing
@@ -98,7 +98,7 @@ postOlympStruct os subject grade token =
 mkTokenHeader token =
     []
 
-boolToStr val = 
+boolToStr val =
     if val then
         "true"
     else

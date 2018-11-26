@@ -22,6 +22,7 @@ import Bootstrap.Form.Input as Input
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Http
 import List
 import List.Extra as List
 import Maybe
@@ -41,12 +42,15 @@ type alias Model =
     , exercise : WebData (Exercise)
     , modalVisibility : Modal.Visibility
     , tagString : String
+    , level : Maybe Int
+    , s : String
+    , g : String
     }
 
 
 init : API.Token -> ( Model, Cmd Msg )
 init token =
-    ( Model token NotAsked NotAsked NotAsked Modal.hidden "", getSubjects token )
+    ( Model token NotAsked NotAsked NotAsked Modal.hidden "" Nothing "" "", getSubjects token )
 
 
 type Msg
@@ -73,7 +77,7 @@ getSubjects token =
 
 getSubject : String -> String -> API.Token -> Cmd Msg
 getSubject grade subject token =
-    API.getSubject subject token
+    API.getSubject subject grade token
         |> RemoteData.sendRequest
         |> Cmd.map GetSubject
 
@@ -102,31 +106,41 @@ update msg model =
                         msubject = List.getAt 0 data
                         subject = Maybe.withDefault "" msubject
                     in
-                     ( {model | subjects = subjects, exercise = NotAsked }, getSubject "" subject model.token )
-                _ -> ( {model | subjects = subjects, exercise = NotAsked }, Cmd.none )
+                     ( {model | subjects = subjects, exercise = NotAsked, s = subject }, getSubject "" subject model.token )
+                _ -> ( {model | subjects = subjects, exercise = NotAsked}, Cmd.none )
         GetSubject resp ->
             logResponce resp <| ( {model | subject = mapResponce resp}, Cmd.none )
         GetExercise resp ->
             let
                 exercise = mapResponce resp
+                cleanedExercise = RemoteData.map cleanTags exercise
+                level =
+                    case exercise of
+                        Success ex ->
+                            if find level1_2018 ex.tags
+                            then Just 1
+                            else if find level2_2018 ex.tags
+                            then Just 2
+                            else if find level3_2018 ex.tags
+                            then Just 3
+                            else Nothing
+                        _ -> Nothing
+                tagString =
+                    case cleanedExercise of
+                        Success ex -> String.join ", "  ex.tags
+                        _ -> ""
             in
-            logResponce resp <| ( {model | exercise = exercise }, Cmd.none )
+            logResponce resp <| ( {model | exercise = cleanedExercise, level = level, tagString = tagString }, Cmd.none )
         SubjectSelect subject ->
-            ( {model | exercise = NotAsked}, getSubject "" subject model.token )
+            ( {model | exercise = NotAsked, s = subject}, getSubject "" subject model.token )
+        GradeSelect grade ->
+            ( {model | exercise = NotAsked, g = grade}, getSubject grade model.s model.token )
         ExerciseSelect id ->
             ( model, getExercise id model.token )
         Level l ->
             case model.exercise of
                 Success exercise ->
-                    let
-                        cleanedExercise = cleanTags exercise
-                        temp = if List.last cleanedExercise.tags == Just ""
-                            then Maybe.withDefault [] <| List.init cleanedExercise.tags
-                            else cleanedExercise.tags
-                        tag = String.fromInt l ++ " уровень сложности 2018 года"
-                        taggedExercise = {cleanedExercise | tags = temp ++ [tag]}
-                    in
-                    ( {model | exercise = Success taggedExercise }, Cmd.none)
+                    ( {model | level = Just l }, Cmd.none)
                 _ ->
                     ( model, Cmd.none )
         NumberInVariant sv ->
@@ -149,24 +163,21 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
         UpdateExercise ->
-            case model.exercise of
-                Success exercise ->
-                    ( model, postExercise exercise model.token )
+            case (model.exercise, model.level) of
+                (Success exercise, Just l) ->
+                    let
+                        tags = List.map String.trim <| String.split "," model.tagString
+                        cleanedTags = List.filter (\x -> x /= "") <| cleanTags_ tags
+                        tag = String.fromInt l ++ " уровень сложности 2018 года"
+                        taggedExercise = {exercise | tags = tags ++ [tag]}
+                    in
+                    ( model, postExercise taggedExercise model.token )
                 _ ->
                     ( model, Cmd.none )
         InputTags stags ->
-            case model.exercise of
-                Success exercise ->
-                    let
-                        temp = if List.last exercise.tags == Just "" && String.endsWith "," stags
-                            then String.dropRight 1 stags
-                            else stags
-                        tags = String.split "," temp
-                        updated = { exercise | tags = tags }
-                    in
-                    ( {model | exercise = Success updated }, Cmd.none)
-                _ ->
-                    ( model, Cmd.none )
+            ( {model | tagString = stags }, Cmd.none)
+        PostExercise (Success _) ->
+            (model, getSubjects "")
         _ ->
             ( model, Cmd.none )
 
@@ -264,8 +275,9 @@ viewExerciseList model =
             in
             ListGroup.anchor attrs [ text <| "#" ++ String.fromInt ex.id ]
     in
-    ListGroup.custom
-        <| List.map mkListItem list
+    div [style "height" "600px", style "overflow" "hidden", style "overflow-y" "scroll"]
+    [ ListGroup.custom
+        <| List.map mkListItem list ]
 
 viewWExercise : Model -> Html.Html Msg
 viewWExercise model =
@@ -275,6 +287,13 @@ viewWExercise model =
 
         Loading ->
             text "Loading."
+
+        Failure (Http.BadStatus resp) ->
+            if resp.status.code == 403
+            then
+                text "У вас нет доступа к этим задачам"
+            else
+                text "error."
 
         Failure err ->
             text "Error."
@@ -297,7 +316,7 @@ viewExercise model exercise =
         , Grid.row
             [ ]
             [ Grid.col [ Col.md12 ]
-                [ viewTags exercise.tags ]
+                [ viewTags model.tagString ]
             ]
         , Grid.row
             [ ]
@@ -308,18 +327,15 @@ viewExercise model exercise =
 
 viewControls : Model -> Exercise -> Html.Html Msg
 viewControls model ex =
-    let
-        find x lst = List.filter (\y -> y == x) lst /= []
-    in
     Form.form []
         [ Form.group []
             [ Form.label [] [ text "Уровень сложности" ]
             , Fieldset.config
                 |> Fieldset.children
                     ( Radio.radioList "customradiogroup"
-                        [ Radio.createCustom [ Radio.onClick (Level 1), Radio.id "rdi1", Radio.checked (find level1_2018 ex.tags) ] level1_2018
-                        , Radio.createCustom [ Radio.onClick (Level 2), Radio.id "rdi2", Radio.checked (find level2_2018 ex.tags) ] level2_2018
-                        , Radio.createCustom [ Radio.onClick (Level 3), Radio.id "rdi3", Radio.checked (find level3_2018 ex.tags) ] level3_2018
+                        [ Radio.createCustom [ Radio.onClick (Level 1), Radio.id "rdi1", Radio.checked (model.level == Just 1) ] level1_2018
+                        , Radio.createCustom [ Radio.onClick (Level 2), Radio.id "rdi2", Radio.checked (model.level == Just 2) ] level2_2018
+                        , Radio.createCustom [ Radio.onClick (Level 3), Radio.id "rdi3", Radio.checked (model.level == Just 3) ] level3_2018
                         ]
                     )
                 |> Fieldset.view
@@ -329,7 +345,7 @@ viewControls model ex =
             ]
         , Form.group []
             [ Form.label [] [ text "№ в билете" ]
-            , Input.number [ Input.onInput NumberInVariant, Input.value <| String.fromInt ex.level ]
+            , Input.number [ Input.onInput NumberInVariant, Input.attrs [Html.Attributes.min "1", Html.Attributes.max "100"], Input.value <| String.fromInt ex.level ]
             ]
         ]
 
@@ -345,15 +361,16 @@ viewPdf path =
         ]
         []
 
-viewTags : List String -> Html.Html Msg
+viewTags : String -> Html.Html Msg
 viewTags tags =
-    let
-        cleaned = cleanTags_ tags
-    in
     Form.form []
         [ Form.group []
             [ Form.label [] [ text "Тэги" ]
-            , Input.text [Input.onInput InputTags, Input.value <| String.join "," <| List.map (\x -> if String.startsWith " " x then x else " " ++ x) cleaned]
+            , Input.text [Input.onInput InputTags, Input.value tags]
             , Form.help [] [ text "Перечислите тэги через запятую" ]
             ]
         ]
+
+
+
+find x lst = List.filter (\y -> y == x) lst /= []
