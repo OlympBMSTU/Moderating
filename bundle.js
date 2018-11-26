@@ -7125,7 +7125,7 @@ var author$project$View$Exercise$update = F2(
 								_Utils_update(
 									model,
 									{exercise: krisajenkins$remotedata$RemoteData$NotAsked, s: subject}),
-								A3(author$project$View$Exercise$getSubject, '', subject, model.token));
+								A3(author$project$View$Exercise$getSubject, model.g, subject, model.token));
 						case 'GradeSelect':
 							var grade = msg.a;
 							var temp = (grade === 'Все задачи') ? '' : grade;

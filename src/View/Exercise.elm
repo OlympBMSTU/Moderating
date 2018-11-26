@@ -132,7 +132,7 @@ update msg model =
             in
             logResponce resp <| ( {model | exercise = cleanedExercise, level = level, tagString = tagString }, Cmd.none )
         SubjectSelect subject ->
-            ( {model | exercise = NotAsked, s = subject}, getSubject "" subject model.token )
+            ( {model | exercise = NotAsked, s = subject}, getSubject model.g subject model.token )
         GradeSelect grade ->
             let
                 temp = if grade == "Все задачи" then "" else grade
