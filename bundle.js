@@ -7128,11 +7128,12 @@ var author$project$View$Exercise$update = F2(
 								A3(author$project$View$Exercise$getSubject, '', subject, model.token));
 						case 'GradeSelect':
 							var grade = msg.a;
+							var temp = (grade === 'Все задачи') ? '' : grade;
 							return _Utils_Tuple2(
 								_Utils_update(
 									model,
-									{exercise: krisajenkins$remotedata$RemoteData$NotAsked, g: grade}),
-								A3(author$project$View$Exercise$getSubject, grade, model.s, model.token));
+									{exercise: krisajenkins$remotedata$RemoteData$NotAsked, g: temp}),
+								A3(author$project$View$Exercise$getSubject, temp, model.s, model.token));
 						case 'ExerciseSelect':
 							var id = msg.a;
 							return _Utils_Tuple2(

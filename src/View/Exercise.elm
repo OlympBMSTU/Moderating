@@ -134,7 +134,10 @@ update msg model =
         SubjectSelect subject ->
             ( {model | exercise = NotAsked, s = subject}, getSubject "" subject model.token )
         GradeSelect grade ->
-            ( {model | exercise = NotAsked, g = grade}, getSubject grade model.s model.token )
+            let
+                temp = if grade == "Все задачи" then "" else grade
+            in
+            ( {model | exercise = NotAsked, g = temp}, getSubject temp model.s model.token )
         ExerciseSelect id ->
             ( model, getExercise id model.token )
         Level l ->
