@@ -45,12 +45,13 @@ type alias Model =
     , level : Maybe Int
     , s : String
     , g : String
+    , modalMessage : String
     }
 
 
 init : API.Token -> ( Model, Cmd Msg )
 init token =
-    ( Model token NotAsked NotAsked NotAsked Modal.hidden "" Nothing "" "", getSubjects token )
+    ( Model token NotAsked NotAsked NotAsked Modal.hidden "" Nothing "" "" "", getSubjects token )
 
 
 type Msg
@@ -182,7 +183,9 @@ update msg model =
         InputTags stags ->
             ( {model | tagString = stags }, Cmd.none)
         PostExercise (Success _) ->
-            (model, getSubject model.g model.s model.token)
+            ( { model | modalMessage = "Ok", modalVisibility = Modal.shown}, getSubject model.g model.s model.token)
+        CloseModal ->
+            ( {model | modalVisibility = Modal.hidden}, Cmd.none)
         _ ->
             ( model, Cmd.none )
 
@@ -208,8 +211,8 @@ view model =
         , Modal.config CloseModal
             |> Modal.small
             |> Modal.hideOnBackdropClick True
-            |> Modal.h3 [] [ text "Ошибка" ]
-            |> Modal.body [] [ p [] [ text "Некорректный формат некоторых полей" ] ]
+            |> Modal.h3 [] [ text "Сообщение" ]
+            |> Modal.body [] [ p [] [ text model.modalMessage ] ]
             |> Modal.footer []
                 [ Button.button
                     [ Button.outlinePrimary

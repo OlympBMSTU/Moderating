@@ -4587,10 +4587,27 @@ var author$project$Moder$Model = F3(
 var author$project$Moder$NavbarMsg = function (a) {
 	return {$: 'NavbarMsg', a: a};
 };
-var author$project$View$Exercise$Model = F9(
-	function (token, subjects, subject, exercise, modalVisibility, tagString, level, s, g) {
-		return {exercise: exercise, g: g, level: level, modalVisibility: modalVisibility, s: s, subject: subject, subjects: subjects, tagString: tagString, token: token};
-	});
+var author$project$View$Exercise$Model = function (token) {
+	return function (subjects) {
+		return function (subject) {
+			return function (exercise) {
+				return function (modalVisibility) {
+					return function (tagString) {
+						return function (level) {
+							return function (s) {
+								return function (g) {
+									return function (modalMessage) {
+										return {exercise: exercise, g: g, level: level, modalMessage: modalMessage, modalVisibility: modalVisibility, s: s, subject: subject, subjects: subjects, tagString: tagString, token: token};
+									};
+								};
+							};
+						};
+					};
+				};
+			};
+		};
+	};
+};
 var elm$core$Basics$EQ = {$: 'EQ'};
 var elm$core$Basics$LT = {$: 'LT'};
 var elm$core$Elm$JsArray$foldr = _JsArray_foldr;
@@ -5902,7 +5919,7 @@ var rundis$elm_bootstrap$Bootstrap$Modal$Hide = {$: 'Hide'};
 var rundis$elm_bootstrap$Bootstrap$Modal$hidden = rundis$elm_bootstrap$Bootstrap$Modal$Hide;
 var author$project$View$Exercise$init = function (token) {
 	return _Utils_Tuple2(
-		A9(author$project$View$Exercise$Model, token, krisajenkins$remotedata$RemoteData$NotAsked, krisajenkins$remotedata$RemoteData$NotAsked, krisajenkins$remotedata$RemoteData$NotAsked, rundis$elm_bootstrap$Bootstrap$Modal$hidden, '', elm$core$Maybe$Nothing, '', ''),
+		author$project$View$Exercise$Model(token)(krisajenkins$remotedata$RemoteData$NotAsked)(krisajenkins$remotedata$RemoteData$NotAsked)(krisajenkins$remotedata$RemoteData$NotAsked)(rundis$elm_bootstrap$Bootstrap$Modal$hidden)('')(elm$core$Maybe$Nothing)('')('')(''),
 		author$project$View$Exercise$getSubjects(token));
 };
 var elm$core$Platform$Cmd$batch = _Platform_batch;
@@ -7045,212 +7062,216 @@ var elm_community$list_extra$List$Extra$getAt = F2(
 		return (idx < 0) ? elm$core$Maybe$Nothing : elm$core$List$head(
 			A2(elm$core$List$drop, idx, xs));
 	});
+var rundis$elm_bootstrap$Bootstrap$Modal$Show = {$: 'Show'};
+var rundis$elm_bootstrap$Bootstrap$Modal$shown = rundis$elm_bootstrap$Bootstrap$Modal$Show;
 var author$project$View$Exercise$update = F2(
 	function (msg, model) {
 		return A2(
 			elm$core$Debug$log,
 			'update',
 			function () {
-				_n0$12:
-				while (true) {
-					switch (msg.$) {
-						case 'GetSubjects':
-							var resp = msg.a;
-							var subjects = author$project$Data$Responce$mapResponce(resp);
-							return A2(
-								author$project$Data$Responce$logResponce,
-								resp,
-								function () {
-									if ((resp.$ === 'Success') && (resp.a.a.$ === 'Just')) {
-										var _n2 = resp.a;
-										var data = _n2.a.a;
-										var msubject = A2(elm_community$list_extra$List$Extra$getAt, 0, data);
-										var subject = A2(elm$core$Maybe$withDefault, '', msubject);
-										return _Utils_Tuple2(
-											_Utils_update(
-												model,
-												{exercise: krisajenkins$remotedata$RemoteData$NotAsked, s: subject, subjects: subjects}),
-											A3(author$project$View$Exercise$getSubject, model.g, subject, model.token));
-									} else {
-										return _Utils_Tuple2(
-											_Utils_update(
-												model,
-												{exercise: krisajenkins$remotedata$RemoteData$NotAsked, subjects: subjects}),
-											elm$core$Platform$Cmd$none);
-									}
-								}());
-						case 'GetSubject':
-							var resp = msg.a;
-							return A2(
-								author$project$Data$Responce$logResponce,
-								resp,
-								_Utils_Tuple2(
-									_Utils_update(
-										model,
-										{
-											subject: author$project$Data$Responce$mapResponce(resp)
-										}),
-									elm$core$Platform$Cmd$none));
-						case 'GetExercise':
-							var resp = msg.a;
-							var exercise = author$project$Data$Responce$mapResponce(resp);
-							var level = function () {
-								if (exercise.$ === 'Success') {
-									var ex = exercise.a;
-									return A2(author$project$View$Exercise$find, author$project$Data$Level$level1_2018, ex.tags) ? elm$core$Maybe$Just(1) : (A2(author$project$View$Exercise$find, author$project$Data$Level$level2_2018, ex.tags) ? elm$core$Maybe$Just(2) : (A2(author$project$View$Exercise$find, author$project$Data$Level$level3_2018, ex.tags) ? elm$core$Maybe$Just(3) : elm$core$Maybe$Nothing));
+				switch (msg.$) {
+					case 'GetSubjects':
+						var resp = msg.a;
+						var subjects = author$project$Data$Responce$mapResponce(resp);
+						return A2(
+							author$project$Data$Responce$logResponce,
+							resp,
+							function () {
+								if ((resp.$ === 'Success') && (resp.a.a.$ === 'Just')) {
+									var _n2 = resp.a;
+									var data = _n2.a.a;
+									var msubject = A2(elm_community$list_extra$List$Extra$getAt, 0, data);
+									var subject = A2(elm$core$Maybe$withDefault, '', msubject);
+									return _Utils_Tuple2(
+										_Utils_update(
+											model,
+											{exercise: krisajenkins$remotedata$RemoteData$NotAsked, s: subject, subjects: subjects}),
+										A3(author$project$View$Exercise$getSubject, model.g, subject, model.token));
 								} else {
-									return elm$core$Maybe$Nothing;
+									return _Utils_Tuple2(
+										_Utils_update(
+											model,
+											{exercise: krisajenkins$remotedata$RemoteData$NotAsked, subjects: subjects}),
+										elm$core$Platform$Cmd$none);
 								}
-							}();
-							var cleanedExercise = A2(krisajenkins$remotedata$RemoteData$map, author$project$Data$Exercise$cleanTags, exercise);
-							var tagString = function () {
-								if (cleanedExercise.$ === 'Success') {
-									var ex = cleanedExercise.a;
-									return A2(elm$core$String$join, ', ', ex.tags);
-								} else {
-									return '';
-								}
-							}();
-							return A2(
-								author$project$Data$Responce$logResponce,
-								resp,
-								_Utils_Tuple2(
-									_Utils_update(
-										model,
-										{exercise: cleanedExercise, level: level, tagString: tagString}),
-									elm$core$Platform$Cmd$none));
-						case 'SubjectSelect':
-							var subject = msg.a;
+							}());
+					case 'GetSubject':
+						var resp = msg.a;
+						return A2(
+							author$project$Data$Responce$logResponce,
+							resp,
+							_Utils_Tuple2(
+								_Utils_update(
+									model,
+									{
+										subject: author$project$Data$Responce$mapResponce(resp)
+									}),
+								elm$core$Platform$Cmd$none));
+					case 'GetExercise':
+						var resp = msg.a;
+						var exercise = author$project$Data$Responce$mapResponce(resp);
+						var level = function () {
+							if (exercise.$ === 'Success') {
+								var ex = exercise.a;
+								return A2(author$project$View$Exercise$find, author$project$Data$Level$level1_2018, ex.tags) ? elm$core$Maybe$Just(1) : (A2(author$project$View$Exercise$find, author$project$Data$Level$level2_2018, ex.tags) ? elm$core$Maybe$Just(2) : (A2(author$project$View$Exercise$find, author$project$Data$Level$level3_2018, ex.tags) ? elm$core$Maybe$Just(3) : elm$core$Maybe$Nothing));
+							} else {
+								return elm$core$Maybe$Nothing;
+							}
+						}();
+						var cleanedExercise = A2(krisajenkins$remotedata$RemoteData$map, author$project$Data$Exercise$cleanTags, exercise);
+						var tagString = function () {
+							if (cleanedExercise.$ === 'Success') {
+								var ex = cleanedExercise.a;
+								return A2(elm$core$String$join, ', ', ex.tags);
+							} else {
+								return '';
+							}
+						}();
+						return A2(
+							author$project$Data$Responce$logResponce,
+							resp,
+							_Utils_Tuple2(
+								_Utils_update(
+									model,
+									{exercise: cleanedExercise, level: level, tagString: tagString}),
+								elm$core$Platform$Cmd$none));
+					case 'SubjectSelect':
+						var subject = msg.a;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{exercise: krisajenkins$remotedata$RemoteData$NotAsked, s: subject}),
+							A3(author$project$View$Exercise$getSubject, model.g, subject, model.token));
+					case 'GradeSelect':
+						var grade = msg.a;
+						var temp = (grade === 'Все задачи') ? '' : grade;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{exercise: krisajenkins$remotedata$RemoteData$NotAsked, g: temp}),
+							A3(author$project$View$Exercise$getSubject, temp, model.s, model.token));
+					case 'ExerciseSelect':
+						var id = msg.a;
+						return _Utils_Tuple2(
+							model,
+							A2(author$project$View$Exercise$getExercise, id, model.token));
+					case 'Level':
+						var l = msg.a;
+						var _n5 = model.exercise;
+						if (_n5.$ === 'Success') {
+							var exercise = _n5.a;
 							return _Utils_Tuple2(
 								_Utils_update(
 									model,
-									{exercise: krisajenkins$remotedata$RemoteData$NotAsked, s: subject}),
-								A3(author$project$View$Exercise$getSubject, model.g, subject, model.token));
-						case 'GradeSelect':
-							var grade = msg.a;
-							var temp = (grade === 'Все задачи') ? '' : grade;
+									{
+										level: elm$core$Maybe$Just(l)
+									}),
+								elm$core$Platform$Cmd$none);
+						} else {
+							return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
+						}
+					case 'NumberInVariant':
+						var sv = msg.a;
+						var _n6 = model.exercise;
+						if (_n6.$ === 'Success') {
+							var exercise = _n6.a;
+							var v = A2(
+								elm$core$Maybe$withDefault,
+								0,
+								elm$core$String$toInt(sv));
+							var updated = _Utils_update(
+								exercise,
+								{level: v});
 							return _Utils_Tuple2(
 								_Utils_update(
 									model,
-									{exercise: krisajenkins$remotedata$RemoteData$NotAsked, g: temp}),
-								A3(author$project$View$Exercise$getSubject, temp, model.s, model.token));
-						case 'ExerciseSelect':
-							var id = msg.a;
+									{
+										exercise: krisajenkins$remotedata$RemoteData$Success(updated)
+									}),
+								elm$core$Platform$Cmd$none);
+						} else {
+							return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
+						}
+					case 'Reject':
+						var r = msg.a;
+						var _n7 = model.exercise;
+						if (_n7.$ === 'Success') {
+							var exercise = _n7.a;
+							var updated = _Utils_update(
+								exercise,
+								{rejected: r});
+							return _Utils_Tuple2(
+								_Utils_update(
+									model,
+									{
+										exercise: krisajenkins$remotedata$RemoteData$Success(updated)
+									}),
+								elm$core$Platform$Cmd$none);
+						} else {
+							return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
+						}
+					case 'UpdateExercise':
+						var _n8 = model.exercise;
+						if (_n8.$ === 'Success') {
+							var exercise = _n8.a;
+							var tags = A2(
+								elm$core$List$map,
+								elm$core$String$trim,
+								A2(elm$core$String$split, ',', model.tagString));
+							var tag = function () {
+								var _n9 = model.level;
+								if (_n9.$ === 'Just') {
+									var l = _n9.a;
+									return _List_fromArray(
+										[
+											elm$core$String$fromInt(l) + ' уровень сложности 2018 года'
+										]);
+								} else {
+									return _List_Nil;
+								}
+							}();
+							var taggedExercise = _Utils_update(
+								exercise,
+								{
+									tags: _Utils_ap(tags, tag)
+								});
+							var cleanedTags = A2(
+								elm$core$List$filter,
+								function (x) {
+									return x !== '';
+								},
+								author$project$Data$Exercise$cleanTags_(tags));
 							return _Utils_Tuple2(
 								model,
-								A2(author$project$View$Exercise$getExercise, id, model.token));
-						case 'Level':
-							var l = msg.a;
-							var _n5 = model.exercise;
-							if (_n5.$ === 'Success') {
-								var exercise = _n5.a;
-								return _Utils_Tuple2(
-									_Utils_update(
-										model,
-										{
-											level: elm$core$Maybe$Just(l)
-										}),
-									elm$core$Platform$Cmd$none);
-							} else {
-								return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
-							}
-						case 'NumberInVariant':
-							var sv = msg.a;
-							var _n6 = model.exercise;
-							if (_n6.$ === 'Success') {
-								var exercise = _n6.a;
-								var v = A2(
-									elm$core$Maybe$withDefault,
-									0,
-									elm$core$String$toInt(sv));
-								var updated = _Utils_update(
-									exercise,
-									{level: v});
-								return _Utils_Tuple2(
-									_Utils_update(
-										model,
-										{
-											exercise: krisajenkins$remotedata$RemoteData$Success(updated)
-										}),
-									elm$core$Platform$Cmd$none);
-							} else {
-								return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
-							}
-						case 'Reject':
-							var r = msg.a;
-							var _n7 = model.exercise;
-							if (_n7.$ === 'Success') {
-								var exercise = _n7.a;
-								var updated = _Utils_update(
-									exercise,
-									{rejected: r});
-								return _Utils_Tuple2(
-									_Utils_update(
-										model,
-										{
-											exercise: krisajenkins$remotedata$RemoteData$Success(updated)
-										}),
-									elm$core$Platform$Cmd$none);
-							} else {
-								return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
-							}
-						case 'UpdateExercise':
-							var _n8 = model.exercise;
-							if (_n8.$ === 'Success') {
-								var exercise = _n8.a;
-								var tags = A2(
-									elm$core$List$map,
-									elm$core$String$trim,
-									A2(elm$core$String$split, ',', model.tagString));
-								var tag = function () {
-									var _n9 = model.level;
-									if (_n9.$ === 'Just') {
-										var l = _n9.a;
-										return _List_fromArray(
-											[
-												elm$core$String$fromInt(l) + ' уровень сложности 2018 года'
-											]);
-									} else {
-										return _List_Nil;
-									}
-								}();
-								var taggedExercise = _Utils_update(
-									exercise,
-									{
-										tags: _Utils_ap(tags, tag)
-									});
-								var cleanedTags = A2(
-									elm$core$List$filter,
-									function (x) {
-										return x !== '';
-									},
-									author$project$Data$Exercise$cleanTags_(tags));
-								return _Utils_Tuple2(
-									model,
-									A2(author$project$View$Exercise$postExercise, taggedExercise, model.token));
-							} else {
-								return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
-							}
-						case 'InputTags':
-							var stags = msg.a;
+								A2(author$project$View$Exercise$postExercise, taggedExercise, model.token));
+						} else {
+							return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
+						}
+					case 'InputTags':
+						var stags = msg.a;
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{tagString: stags}),
+							elm$core$Platform$Cmd$none);
+					case 'PostExercise':
+						if (msg.a.$ === 'Success') {
 							return _Utils_Tuple2(
 								_Utils_update(
 									model,
-									{tagString: stags}),
-								elm$core$Platform$Cmd$none);
-						case 'PostExercise':
-							if (msg.a.$ === 'Success') {
-								return _Utils_Tuple2(
-									model,
-									A3(author$project$View$Exercise$getSubject, model.g, model.s, model.token));
-							} else {
-								break _n0$12;
-							}
-						default:
-							break _n0$12;
-					}
+									{modalMessage: 'Ok', modalVisibility: rundis$elm_bootstrap$Bootstrap$Modal$shown}),
+								A3(author$project$View$Exercise$getSubject, model.g, model.s, model.token));
+						} else {
+							return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
+						}
+					default:
+						return _Utils_Tuple2(
+							_Utils_update(
+								model,
+								{modalVisibility: rundis$elm_bootstrap$Bootstrap$Modal$hidden}),
+							elm$core$Platform$Cmd$none);
 				}
-				return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
 			}());
 	});
 var author$project$Moder$update = F2(
@@ -7366,6 +7387,25 @@ var rundis$elm_bootstrap$Bootstrap$Navbar$config = function (toMsg) {
 			withAnimation: false
 		});
 };
+var rundis$elm_bootstrap$Bootstrap$Navbar$Item = function (a) {
+	return {$: 'Item', a: a};
+};
+var rundis$elm_bootstrap$Bootstrap$Navbar$itemLink = F2(
+	function (attributes, children) {
+		return rundis$elm_bootstrap$Bootstrap$Navbar$Item(
+			{attributes: attributes, children: children});
+	});
+var rundis$elm_bootstrap$Bootstrap$Navbar$items = F2(
+	function (items_, config_) {
+		return A2(
+			rundis$elm_bootstrap$Bootstrap$Navbar$updateConfig,
+			function (conf) {
+				return _Utils_update(
+					conf,
+					{items: items_});
+			},
+			config_);
+	});
 var elm$core$Maybe$map = F2(
 	function (f, maybe) {
 		if (maybe.$ === 'Just') {
@@ -8172,18 +8212,43 @@ var author$project$Moder$viewNavbar = function (model) {
 				A2(
 				rundis$elm_bootstrap$Bootstrap$Navbar$view,
 				model.navbarState,
-				A3(
-					rundis$elm_bootstrap$Bootstrap$Navbar$brand,
+				A2(
+					rundis$elm_bootstrap$Bootstrap$Navbar$items,
 					_List_fromArray(
 						[
-							elm$html$Html$Attributes$href('#')
+							A2(
+							rundis$elm_bootstrap$Bootstrap$Navbar$itemLink,
+							_List_fromArray(
+								[
+									elm$html$Html$Attributes$href('https://olymp.bmstu.ru/exercises/login/')
+								]),
+							_List_fromArray(
+								[
+									elm$html$Html$text('Личный кабинет')
+								])),
+							A2(
+							rundis$elm_bootstrap$Bootstrap$Navbar$itemLink,
+							_List_fromArray(
+								[
+									elm$html$Html$Attributes$href('https://olymp.bmstu.ru/exercises/upload/')
+								]),
+							_List_fromArray(
+								[
+									elm$html$Html$text('Загрузка задач')
+								]))
 						]),
-					_List_fromArray(
-						[
-							elm$html$Html$text(' Модерирование')
-						]),
-					rundis$elm_bootstrap$Bootstrap$Navbar$withAnimation(
-						rundis$elm_bootstrap$Bootstrap$Navbar$config(author$project$Moder$NavbarMsg))))
+					A3(
+						rundis$elm_bootstrap$Bootstrap$Navbar$brand,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$href('#')
+							]),
+						_List_fromArray(
+							[
+								elm$html$Html$text(' Модерирование')
+							]),
+						rundis$elm_bootstrap$Bootstrap$Navbar$withAnimation(
+							rundis$elm_bootstrap$Bootstrap$Navbar$config(author$project$Moder$NavbarMsg)))))
 			]));
 };
 var author$project$View$Exercise$CloseModal = {$: 'CloseModal'};
@@ -11155,7 +11220,7 @@ var author$project$View$Exercise$view = function (model) {
 								_List_Nil,
 								_List_fromArray(
 									[
-										elm$html$Html$text('Некорректный формат некоторых полей')
+										elm$html$Html$text(model.modalMessage)
 									]))
 							]),
 						A3(
@@ -11163,7 +11228,7 @@ var author$project$View$Exercise$view = function (model) {
 							_List_Nil,
 							_List_fromArray(
 								[
-									elm$html$Html$text('Ошибка')
+									elm$html$Html$text('Сообщение')
 								]),
 							A2(
 								rundis$elm_bootstrap$Bootstrap$Modal$hideOnBackdropClick,

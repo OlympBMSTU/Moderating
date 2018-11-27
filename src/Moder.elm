@@ -101,6 +101,10 @@ viewNavbar model =
             |> Navbar.brand [ href "#" ]
                 [ text " Модерирование"
                 ]
+            |> Navbar.items
+                [ Navbar.itemLink [href "https://olymp.bmstu.ru/exercises/login/"] [ text "Личный кабинет"]
+                , Navbar.itemLink [href "https://olymp.bmstu.ru/exercises/upload/"] [ text "Загрузка задач"]
+                ]
             |> Navbar.view model.navbarState
         ]
 
