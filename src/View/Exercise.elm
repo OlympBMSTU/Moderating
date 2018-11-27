@@ -166,13 +166,15 @@ update msg model =
                 _ ->
                     ( model, Cmd.none )
         UpdateExercise ->
-            case (model.exercise, model.level) of
-                (Success exercise, Just l) ->
+            case model.exercise of
+                Success exercise ->
                     let
                         tags = List.map String.trim <| String.split "," model.tagString
                         cleanedTags = List.filter (\x -> x /= "") <| cleanTags_ tags
-                        tag = String.fromInt l ++ " уровень сложности 2018 года"
-                        taggedExercise = {exercise | tags = tags ++ [tag]}
+                        tag = case model.level of
+                            Just l  -> [String.fromInt l ++ " уровень сложности 2018 года"]
+                            Nothing -> []
+                        taggedExercise = {exercise | tags = tags ++ tag}
                     in
                     ( model, postExercise taggedExercise model.token )
                 _ ->

@@ -7195,22 +7195,29 @@ var author$project$View$Exercise$update = F2(
 								return _Utils_Tuple2(model, elm$core$Platform$Cmd$none);
 							}
 						case 'UpdateExercise':
-							var _n8 = _Utils_Tuple2(model.exercise, model.level);
-							if ((_n8.a.$ === 'Success') && (_n8.b.$ === 'Just')) {
-								var exercise = _n8.a.a;
-								var l = _n8.b.a;
+							var _n8 = model.exercise;
+							if (_n8.$ === 'Success') {
+								var exercise = _n8.a;
 								var tags = A2(
 									elm$core$List$map,
 									elm$core$String$trim,
 									A2(elm$core$String$split, ',', model.tagString));
-								var tag = elm$core$String$fromInt(l) + ' уровень сложности 2018 года';
+								var tag = function () {
+									var _n9 = model.level;
+									if (_n9.$ === 'Just') {
+										var l = _n9.a;
+										return _List_fromArray(
+											[
+												elm$core$String$fromInt(l) + ' уровень сложности 2018 года'
+											]);
+									} else {
+										return _List_Nil;
+									}
+								}();
 								var taggedExercise = _Utils_update(
 									exercise,
 									{
-										tags: _Utils_ap(
-											tags,
-											_List_fromArray(
-												[tag]))
+										tags: _Utils_ap(tags, tag)
 									});
 								var cleanedTags = A2(
 									elm$core$List$filter,

@@ -103,3 +103,6 @@ boolToStr val =
         "true"
     else
         "false"
+
+jsonEx ex =
+    (encodeExercise ex)
