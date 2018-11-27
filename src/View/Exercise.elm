@@ -106,7 +106,7 @@ update msg model =
                         msubject = List.getAt 0 data
                         subject = Maybe.withDefault "" msubject
                     in
-                     ( {model | subjects = subjects, exercise = NotAsked, s = subject }, getSubject "" subject model.token )
+                     ( {model | subjects = subjects, exercise = NotAsked, s = subject }, getSubject model.g subject model.token )
                 _ -> ( {model | subjects = subjects, exercise = NotAsked}, Cmd.none )
         GetSubject resp ->
             logResponce resp <| ( {model | subject = mapResponce resp}, Cmd.none )
@@ -182,7 +182,7 @@ update msg model =
         InputTags stags ->
             ( {model | tagString = stags }, Cmd.none)
         PostExercise (Success _) ->
-            (model, getSubjects "")
+            (model, getSubject model.g model.s model.token)
         _ ->
             ( model, Cmd.none )
 

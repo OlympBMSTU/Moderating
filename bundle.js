@@ -7070,7 +7070,7 @@ var author$project$View$Exercise$update = F2(
 											_Utils_update(
 												model,
 												{exercise: krisajenkins$remotedata$RemoteData$NotAsked, s: subject, subjects: subjects}),
-											A3(author$project$View$Exercise$getSubject, '', subject, model.token));
+											A3(author$project$View$Exercise$getSubject, model.g, subject, model.token));
 									} else {
 										return _Utils_Tuple2(
 											_Utils_update(
@@ -7242,7 +7242,7 @@ var author$project$View$Exercise$update = F2(
 							if (msg.a.$ === 'Success') {
 								return _Utils_Tuple2(
 									model,
-									author$project$View$Exercise$getSubjects(''));
+									A3(author$project$View$Exercise$getSubject, model.g, model.s, model.token));
 							} else {
 								break _n0$12;
 							}
