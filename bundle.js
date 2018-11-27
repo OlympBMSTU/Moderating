@@ -6791,9 +6791,9 @@ var author$project$Data$Exercise$cleanTags = function (ex) {
 var author$project$Data$Exercise$cleanTags_ = function (lst) {
 	return A2(elm$core$List$filter, author$project$Data$Exercise$cleanTag, lst);
 };
-var author$project$Data$Level$level1_2018 = '1 уровень сложности 2018 года';
-var author$project$Data$Level$level2_2018 = '2 уровень сложности 2018 года';
-var author$project$Data$Level$level3_2018 = '3 уровень сложности 2018 года';
+var author$project$Data$Level$level1_2018 = 'Сложный уровень сложности 2018 года';
+var author$project$Data$Level$level2_2018 = 'Продвинутый уровень сложности 2018 года';
+var author$project$Data$Level$level3_2018 = 'Базовый уровень сложности 2018 года';
 var elm$core$Debug$log = _Debug_log;
 var author$project$Data$Responce$logResponce = F2(
 	function (resp, x) {
