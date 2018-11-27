@@ -6760,7 +6760,7 @@ var elm$regex$Regex$never = _Regex_never;
 var author$project$Data$Level$levelRegex = A2(
 	elm$core$Maybe$withDefault,
 	elm$regex$Regex$never,
-	elm$regex$Regex$fromString('[123] уровень сложности 2018 года?$'));
+	elm$regex$Regex$fromString('((Сложный)|(Продвинутый)|(Базовый)) уровень сложности 2018 года?$'));
 var elm$core$Basics$not = _Basics_not;
 var elm$core$String$trim = _String_trim;
 var elm$regex$Regex$contains = _Regex_contains;
@@ -6794,6 +6794,18 @@ var author$project$Data$Exercise$cleanTags_ = function (lst) {
 var author$project$Data$Level$level1_2018 = 'Сложный уровень сложности 2018 года';
 var author$project$Data$Level$level2_2018 = 'Продвинутый уровень сложности 2018 года';
 var author$project$Data$Level$level3_2018 = 'Базовый уровень сложности 2018 года';
+var author$project$Data$Level$levelSelector = function (n) {
+	switch (n) {
+		case 1:
+			return author$project$Data$Level$level1_2018;
+		case 2:
+			return author$project$Data$Level$level2_2018;
+		case 3:
+			return author$project$Data$Level$level3_2018;
+		default:
+			return '';
+	}
+};
 var elm$core$Debug$log = _Debug_log;
 var author$project$Data$Responce$logResponce = F2(
 	function (resp, x) {
@@ -7225,7 +7237,7 @@ var author$project$View$Exercise$update = F2(
 									var l = _n9.a;
 									return _List_fromArray(
 										[
-											elm$core$String$fromInt(l) + ' уровень сложности 2018 года'
+											author$project$Data$Level$levelSelector(l)
 										]);
 								} else {
 									return _List_Nil;

@@ -173,7 +173,7 @@ update msg model =
                         tags = List.map String.trim <| String.split "," model.tagString
                         cleanedTags = List.filter (\x -> x /= "") <| cleanTags_ tags
                         tag = case model.level of
-                            Just l  -> [String.fromInt l ++ " уровень сложности 2018 года"]
+                            Just l  -> [levelSelector l]
                             Nothing -> []
                         taggedExercise = {exercise | tags = tags ++ tag}
                     in
@@ -382,3 +382,5 @@ viewTags tags =
 
 
 find x lst = List.filter (\y -> y == x) lst /= []
+
+
