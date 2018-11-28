@@ -8247,6 +8247,16 @@ var author$project$Moder$viewNavbar = function (model) {
 							_List_fromArray(
 								[
 									elm$html$Html$text('Загрузка задач')
+								])),
+							A2(
+							rundis$elm_bootstrap$Bootstrap$Navbar$itemLink,
+							_List_fromArray(
+								[
+									elm$html$Html$Attributes$href('https://olymp.bmstu.ru/exercises/confg/')
+								]),
+							_List_fromArray(
+								[
+									elm$html$Html$text('Структура билета')
 								]))
 						]),
 					A3(

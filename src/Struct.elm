@@ -99,7 +99,12 @@ viewNavbar model =
         [ Navbar.config NavbarMsg
             |> Navbar.withAnimation
             |> Navbar.brand [ href "#" ]
-                [ text " Модерирование"
+                [ text " Структура билета"
+                ]
+            |> Navbar.items
+                [ Navbar.itemLink [href "https://olymp.bmstu.ru/exercises/login/"] [ text "Личный кабинет"]
+                , Navbar.itemLink [href "https://olymp.bmstu.ru/exercises/upload/"] [ text "Загрузка задач"]
+                , Navbar.itemLink [href "https://olymp.bmstu.ru/exercises/moder/"] [ text "Модерирование"]
                 ]
             |> Navbar.view model.navbarState
         ]

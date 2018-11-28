@@ -233,9 +233,9 @@ viewStruct model struct =
       { options = [  ]
       , thead =  Table.simpleThead
           [ Table.th [] [ text "" ]
-          , Table.th [] [ text "1 Сложность" ]
-          , Table.th [] [ text "2 Сложность" ]
-          , Table.th [] [ text "3 Сложность" ]
+          , Table.th [] [ text "Базовая Сложность" ]
+          , Table.th [] [ text "Продвинутая Сложность" ]
+          , Table.th [] [ text "Сложная Сложность" ]
           , Table.th [] [ text "Сумма" ]
           ]
       , tbody =
@@ -248,49 +248,3 @@ viewStruct model struct =
                     ++ (List.indexedMap mkCellPoint struct.perExs)
               ]
       }
-
--- viewControls : Model -> Exercise -> Html.Html Msg
--- viewControls model ex =
---     Form.form []
---         [ Form.group []
---             [ Form.label [] [ text "Уровень сложности" ]
---             , Fieldset.config
---                 |> Fieldset.children
---                     ( Radio.radioList "customradiogroup"
---                         [ Radio.createCustom [ Radio.onClick (Level 1), Radio.id "rdi1", Radio.checked (Just 1 == model.level) ] "1 уровень сложности 2018 года"
---                         , Radio.createCustom [ Radio.onClick (Level 2), Radio.id "rdi2", Radio.checked (Just 2 == model.level) ] "2 уровень сложности 2018 года"
---                         , Radio.createCustom [ Radio.onClick (Level 3), Radio.id "rdi3", Radio.checked (Just 3 == model.level) ] "3 уровень сложности 2018 года"
---                         ]
---                     )
---                 |> Fieldset.view
---             ]
---         , Form.group []
---             [ Checkbox.custom [ Checkbox.onCheck Reject, Checkbox.id "block", Checkbox.checked ex.rejected ] "Заблокировать"
---             ]
---         , Form.group []
---             [ Form.label [] [ text "№ в билете" ]
---             , Input.number [ Input.onInput NumberInVariant, Input.value <| String.fromInt ex.level ]
---             ]
---         ]
-
--- viewPdf : String -> Html.Html Msg
--- viewPdf path =
---     let
---         url = "https://olymp.bmstu.ru/exercises/files/" ++ path
---     in
---     iframe
---         [ style "height" "400px"
---         , style "width" "100%"
---         , src url
---         ]
---         []
-
--- viewTags : List String -> Html.Html Msg
--- viewTags tags =
---     Form.form []
---         [ Form.group []
---             [ Form.label [] [ text "Тэги" ]
---             , Input.text [Input.onInput InputTags, Input.value <| String.join "," <| List.map (\x -> if String.startsWith " " x then x else " " ++ x) tags]
---             , Form.help [] [ text "Перечислите тэги через запятую" ]
---             ]
---         ]

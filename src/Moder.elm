@@ -104,6 +104,7 @@ viewNavbar model =
             |> Navbar.items
                 [ Navbar.itemLink [href "https://olymp.bmstu.ru/exercises/login/"] [ text "Личный кабинет"]
                 , Navbar.itemLink [href "https://olymp.bmstu.ru/exercises/upload/"] [ text "Загрузка задач"]
+                , Navbar.itemLink [href "https://olymp.bmstu.ru/exercises/confg/"] [ text "Структура билета"]
                 ]
             |> Navbar.view model.navbarState
         ]
