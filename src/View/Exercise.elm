@@ -352,7 +352,7 @@ viewControls model ex =
             [ Checkbox.custom [ Checkbox.onCheck Reject, Checkbox.id "block", Checkbox.checked ex.rejected ] "Заблокировать"
             ]
         , Form.group []
-            [ Form.label [] [ text "№ в билете" ]
+            [ Form.label [] [ text "Тип задачи" ]
             , Input.number [ Input.onInput NumberInVariant, Input.attrs [Html.Attributes.min "1", Html.Attributes.max "100"], Input.value <| String.fromInt ex.level ]
             ]
         ]

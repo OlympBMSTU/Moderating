@@ -9588,7 +9588,7 @@ var author$project$View$Exercise$viewControls = F2(
 							_List_Nil,
 							_List_fromArray(
 								[
-									elm$html$Html$text('№ в билете')
+									elm$html$Html$text('Тип задачи')
 								])),
 							rundis$elm_bootstrap$Bootstrap$Form$Input$number(
 							_List_fromArray(
