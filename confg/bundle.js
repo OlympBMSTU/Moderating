@@ -6703,7 +6703,7 @@ var author$project$API$getOlympStruct = F3(
 				headers: author$project$API$mkTokenHeader(token),
 				method: 'GET',
 				timeout: elm$core$Maybe$Nothing,
-				url: 'https://olymp.bmstu.ru/api/exercises/olymp_conf/' + grade,
+				url: 'https://olymp.bmstu.ru/api/exercises/olymp_conf?subject=' + (subject + ('&grade=' + grade)),
 				withCredentials: true
 			});
 	});
@@ -6781,7 +6781,7 @@ var author$project$API$postOlympStruct = F4(
 				headers: author$project$API$mkTokenHeader(token),
 				method: 'POST',
 				timeout: elm$core$Maybe$Nothing,
-				url: 'https://olymp.bmstu.ru/api/exercises/olymp_conf/' + grade,
+				url: 'https://olymp.bmstu.ru/api/exercises/olymp_conf?subject=' + (subject + ('&grade=' + grade)),
 				withCredentials: true
 			});
 	});

@@ -76,7 +76,7 @@ getOlympStruct subject grade token =
     Http.request
         { method = "GET"
         , headers = mkTokenHeader token
-        , url = "https://olymp.bmstu.ru/api/exercises/olymp_conf/" ++ grade
+        , url = "https://olymp.bmstu.ru/api/exercises/olymp_conf?subject=" ++ subject ++ "&grade=" ++ grade
         , body = Http.emptyBody
         , expect = Http.expectJson (decodeResponce decodeOlympStruct)
         , timeout = Nothing
@@ -88,7 +88,7 @@ postOlympStruct os subject grade token =
     Http.request
         { method = "POST"
         , headers = mkTokenHeader token
-        , url = "https://olymp.bmstu.ru/api/exercises/olymp_conf/" ++ grade
+        , url = "https://olymp.bmstu.ru/api/exercises/olymp_conf?subject=" ++ subject ++ "&grade=" ++ grade
         , body = Http.jsonBody (encodeOlympStruct os)
         , expect = Http.expectStringResponse << always <| Ok ()
         , timeout = Nothing
